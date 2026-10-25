@@ -1,6 +1,6 @@
 import csv
 import io
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from fastapi import APIRouter, Depends, Form, HTTPException
 from fastapi.responses import RedirectResponse, Response
@@ -11,7 +11,15 @@ from .. import audit
 from ..authz import active_grant_clause
 from ..deps import Ctx, check_csrf, require_admin
 from ..models import (
-    ROLE_ADMIN, ROLE_OWNER, ROLES, AuditEvent, Category, Document, Grant, User, UserSession, utcnow,
+    ROLE_OWNER,
+    ROLES,
+    AuditEvent,
+    Category,
+    Document,
+    Grant,
+    User,
+    UserSession,
+    utcnow,
 )
 from ..search import SearchFilters, like_pattern, parse_date, search_documents
 from ..security import USERNAME_RE, hash_password, password_problems

@@ -6,10 +6,24 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from .. import audit
-from ..deps import LOGIN_CSRF_COOKIE, SESSION_COOKIE, Ctx, check_csrf, get_db, load_session, require_user
+from ..deps import (
+    LOGIN_CSRF_COOKIE,
+    SESSION_COOKIE,
+    Ctx,
+    check_csrf,
+    get_db,
+    load_session,
+    require_user,
+)
 from ..models import User, UserSession, utcnow
 from ..security import (
-    burn_password_check, hash_password, new_token, password_problems, token_hash, tokens_equal, verify_password,
+    burn_password_check,
+    hash_password,
+    new_token,
+    password_problems,
+    token_hash,
+    tokens_equal,
+    verify_password,
 )
 from ..web import render
 

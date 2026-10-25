@@ -10,7 +10,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 
-from app.models import AuditEvent, Document, DocumentVersion, Grant, User, utcnow
+from app.models import Document, DocumentVersion, Grant, User, utcnow
 
 from .conftest import SECRET
 

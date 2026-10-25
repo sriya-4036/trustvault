@@ -10,8 +10,17 @@ from .. import audit
 from ..authz import load_document
 from ..deps import Ctx, check_csrf, require_uploader, require_user
 from ..models import (
-    GRANTABLE_PERMS, PERM_EDIT, PERM_MANAGE, PERM_READ, AuditEvent, Category, Document,
-    DocumentVersion, Grant, User, utcnow,
+    GRANTABLE_PERMS,
+    PERM_EDIT,
+    PERM_MANAGE,
+    PERM_READ,
+    AuditEvent,
+    Category,
+    Document,
+    DocumentVersion,
+    Grant,
+    User,
+    utcnow,
 )
 from ..search import SearchFilters, grants_by_document, parse_date, search_documents
 from ..validation import UploadRejected, ValidatedFile, validate_upload
