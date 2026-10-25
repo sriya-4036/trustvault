@@ -65,3 +65,14 @@ def test_login_page_warns_when_no_users(tmp_path):
     settings = Settings(data_dir=tmp_path, database_url=f"sqlite:///{tmp_path / 'trustvault.db'}", bcrypt_rounds=4)
     client = TestClient(create_app(settings))
     assert "No accounts exist yet" in client.get("/login").text
+
+
+def test_head_probes_succeed(tmp_path):
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    settings = Settings(data_dir=tmp_path, database_url=f"sqlite:///{tmp_path / 'trustvault.db'}", bcrypt_rounds=4)
+    client = TestClient(create_app(settings))
+    assert client.head("/healthz").status_code == 200
+    assert client.head("/", follow_redirects=False).status_code == 303

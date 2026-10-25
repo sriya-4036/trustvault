@@ -66,7 +66,7 @@ def _content_disposition(filename: str) -> str:
     return f"attachment; filename=\"{ascii_name}\"; filename*=UTF-8''{quote(filename)}"
 
 
-@router.get("/")
+@router.api_route("/", methods=["GET", "HEAD"])
 def home():
     return RedirectResponse("/documents", status_code=303)
 
