@@ -10,4 +10,5 @@ ENV TRUSTVAULT_DATA_DIR=/data
 VOLUME /data
 EXPOSE 8000
 # Single worker: the audit hash chain is serialised in-process (see README).
-CMD ["uvicorn", "app.main:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--proxy-headers"]
+# PORT is set by hosts such as Render; `bootstrap` optionally seeds demo data or the first admin.
+CMD ["sh", "-c", "python -m app.cli bootstrap && exec uvicorn app.main:create_app --factory --host 0.0.0.0 --port ${PORT:-8000} --workers 1 --proxy-headers"]

@@ -1,0 +1,25 @@
+# Render Blueprint: Dashboard -> New -> Blueprint -> pick this repo.
+# Free plan = demo mode: the disk is temporary, so data resets on every deploy/restart
+# and the demo users are re-created. For real use see RUNBOOK.md section 13.
+services:
+  - type: web
+    name: trustvault
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: TRUSTVAULT_MASTER_KEY
+        generateValue: true
+      - key: TRUSTVAULT_COOKIE_SECURE
+        value: "true"
+      - key: TRUSTVAULT_SEED_DEMO
+        value: "true"
+      # Render's proxy sets X-Forwarded-For; trust it so the audit log records real client IPs.
+      - key: FORWARDED_ALLOW_IPS
+        value: "*"
+    # Persistent data (paid plan): set plan: starter, remove TRUSTVAULT_SEED_DEMO,
+    # add TRUSTVAULT_ADMIN_PASSWORD (sync: false) and uncomment:
+    # disk:
+    #   name: trustvault-data
+    #   mountPath: /data
+    #   sizeGB: 1

@@ -1,7 +1,8 @@
-"""Command line helpers: `python -m app.cli create-user ...` and `python -m app.cli seed-demo`."""
+"""Command line helpers: `python -m app.cli create-user ...`, `seed-demo` and `bootstrap`."""
 import argparse
 import getpass
 import io
+import os
 import sys
 
 from sqlalchemy import select
@@ -95,6 +96,27 @@ def seed_demo(_args) -> int:
     return 0
 
 
+def bootstrap(_args) -> int:
+    """Container start-up hook for hosts without shell access (e.g. Render).
+
+    TRUSTVAULT_SEED_DEMO=true seeds the demo data into an empty database.
+    TRUSTVAULT_ADMIN_PASSWORD (+ optional TRUSTVAULT_ADMIN_USERNAME) creates the first admin.
+    Both do nothing once users exist.
+    """
+    if os.environ.get("TRUSTVAULT_SEED_DEMO", "").strip().lower() in {"1", "true", "yes", "on"}:
+        return seed_demo(_args)
+    password = os.environ.get("TRUSTVAULT_ADMIN_PASSWORD")
+    if not password:
+        return 0
+    settings, engine = _setup()
+    with Session(engine) as db:
+        if db.execute(select(User).limit(1)).first():
+            return 0
+    username = os.environ.get("TRUSTVAULT_ADMIN_USERNAME", "admin")
+    ns = argparse.Namespace(username=username, role="admin", full_name="Administrator", password=password)
+    return create_user(ns)
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="python -m app.cli")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -106,6 +128,8 @@ def main(argv=None) -> int:
     cu.set_defaults(func=create_user)
     sd = sub.add_parser("seed-demo", help="Create demo users and documents in an empty database")
     sd.set_defaults(func=seed_demo)
+    bs = sub.add_parser("bootstrap", help="Seed demo data or create the first admin from environment variables")
+    bs.set_defaults(func=bootstrap)
     args = p.parse_args(argv)
     return args.func(args)
 

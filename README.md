@@ -6,7 +6,7 @@ Stack: Python 3.10+, FastAPI, SQLAlchemy 2, SQLite, server-rendered Jinja2 (no J
 
 ## Run it
 
-Step-by-step setup for Windows, macOS and Linux, plus troubleshooting: see **[RUNBOOK.md](RUNBOOK.md)**.
+Step-by-step setup for Windows, macOS and Linux, deploying to Render for a public link, and troubleshooting: see **[RUNBOOK.md](RUNBOOK.md)**.
 
 ```bash
 sudo apt-get install -y libmagic1            # used to sniff uploaded content
