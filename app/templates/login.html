@@ -6,6 +6,7 @@
   <h2>&#128075; Welcome back! Sign in</h2>
   <p class="muted">Every sign-in, view and download is recorded.</p>
   {% if error %}<div class="flash flash-error">{{ error }}</div>{% endif %}
+  {% if no_users %}<div class="flash flash-error">&#9888;&#65039; No accounts exist yet. Run <code>python -m app.cli seed-demo</code>, or on Render set the environment variable <code>TRUSTVAULT_SEED_DEMO=true</code> and redeploy.</div>{% endif %}
   <form method="post" action="/login" autocomplete="on">
     <input type="hidden" name="csrf_token" value="{{ login_csrf }}">
     <label>Username <input name="username" value="{{ username }}" required autofocus maxlength="64" autocomplete="username"></label>

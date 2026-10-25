@@ -107,6 +107,7 @@ def bootstrap(_args) -> int:
         return seed_demo(_args)
     password = os.environ.get("TRUSTVAULT_ADMIN_PASSWORD")
     if not password:
+        print("bootstrap: TRUSTVAULT_SEED_DEMO / TRUSTVAULT_ADMIN_PASSWORD not set; no users created.")
         return 0
     settings, engine = _setup()
     with Session(engine) as db:

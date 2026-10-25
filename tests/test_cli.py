@@ -55,3 +55,13 @@ def test_render_style_master_key_accepted(monkeypatch, tmp_path):
     _env(monkeypatch, tmp_path, TRUSTVAULT_MASTER_KEY=std)
     assert Settings.from_env().master_key == raw
     assert os.environ["TRUSTVAULT_MASTER_KEY"] == std
+
+
+def test_login_page_warns_when_no_users(tmp_path):
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    settings = Settings(data_dir=tmp_path, database_url=f"sqlite:///{tmp_path / 'trustvault.db'}", bcrypt_rounds=4)
+    client = TestClient(create_app(settings))
+    assert "No accounts exist yet" in client.get("/login").text

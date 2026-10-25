@@ -267,6 +267,8 @@ Limits of the free plan:
 
 | Problem | Fix |
 |---|---|
+| "Incorrect username or password" / "No accounts exist yet" | The demo users weren't created, which happens when the service was made with **New → Web Service** instead of **New → Blueprint**. In the service open **Environment**, add `TRUSTVAULT_SEED_DEMO` = `true`, then click **Save, rebuild, and deploy**. The logs should show `Seeded demo users` |
+| Still "incorrect" after 5 tries | That account is locked for 15 minutes. Wait, or use another demo user |
 | Repo not listed | Give the Render GitHub App access to `trustvault` |
 | Deploy fails at health check | Open **Logs**. The app must answer `GET /healthz` on `$PORT` (the Dockerfile already does this) |
 | Can't sign in after a while | On the free plan the data was reset. Sign in again with the demo users |

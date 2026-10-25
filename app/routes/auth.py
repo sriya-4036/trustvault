@@ -33,7 +33,10 @@ GENERIC_LOGIN_ERROR = "Incorrect username or password, or the account is locked 
 
 def _login_page(request: Request, error: str = "", username: str = "", status_code: int = 200):
     token = new_token()
-    resp = render(request, "login.html", {"login_csrf": token, "error": error, "username": username}, status_code)
+    with Session(request.app.state.engine) as db:
+        no_users = db.execute(select(User.id).limit(1)).first() is None
+    ctx = {"login_csrf": token, "error": error, "username": username, "no_users": no_users}
+    resp = render(request, "login.html", ctx, status_code)
     resp.set_cookie(
         LOGIN_CSRF_COOKIE, token, httponly=True, samesite="strict",
         secure=request.app.state.settings.cookie_secure, max_age=3600, path="/login",
