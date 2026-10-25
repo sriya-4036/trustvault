@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Documents{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Documents</h1>
+  {% if user.role == 'owner' %}<a class="button primary" href="/documents/new">Upload document</a>{% endif %}
+</div>
+<form method="get" action="/documents" class="card search">
+  <div class="grid">
+    <label>Name <input name="q" value="{{ f.q }}" placeholder="Contains…"></label>
+    <label>Owner <input name="owner" value="{{ f.owner }}" placeholder="Username or name"></label>
+    <label>Category
+      <select name="category"><option value="">Any</option>
+        {% for cat in categories %}<option value="{{ cat.id }}" {% if f.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Date
+      <select name="date_field">
+        <option value="uploaded" {% if f.date_field == 'uploaded' %}selected{% endif %}>Uploaded</option>
+        <option value="modified" {% if f.date_field == 'modified' %}selected{% endif %}>Last modified</option>
+      </select>
+    </label>
+    <label>From <input type="date" name="date_from" value="{{ f.date_from or '' }}"></label>
+    <label>To <input type="date" name="date_to" value="{{ f.date_to or '' }}"></label>
+    <label>Show
+      <select name="scope">
+        <option value="all" {% if f.scope == 'all' %}selected{% endif %}>Everything I can access</option>
+        <option value="mine" {% if f.scope == 'mine' %}selected{% endif %}>Owned by me</option>
+        <option value="shared" {% if f.scope == 'shared' %}selected{% endif %}>Shared with me</option>
+      </select>
+    </label>
+  </div>
+  <div class="actions"><button type="submit" class="primary">Search</button> <a href="/documents">Reset</a></div>
+  {% for e in f.errors %}<div class="flash flash-error">{{ e }}</div>{% endfor %}
+</form>
+
+<table class="docs">
+  <thead><tr><th>Name</th><th>Category</th><th>Owner</th><th>Your access</th><th>Version</th><th>Uploaded</th><th>Modified</th></tr></thead>
+  <tbody>
+  {% for d in docs %}
+    {% set g = grants.get(d.id) %}
+    <tr>
+      <td><a href="/documents/{{ d.id }}">{{ d.name }}</a></td>
+      <td>{{ d.category.name }}</td>
+      <td>{{ d.owner.full_name }} <span class="muted">@{{ d.owner.username }}</span></td>
+      <td>{% if d.owner_id == user.id %}<span class="badge perm-owner">owner</span>{% elif g %}<span class="badge perm-{{ g.permission }}">{{ g.permission }}</span>{% if g.expires_at %} <span class="muted">until {{ g.expires_at | dt }}</span>{% endif %}{% endif %}</td>
+      <td>v{{ d.current_version.version_no if d.current_version else '-' }}</td>
+      <td class="nowrap">{{ d.created_at | dt }}</td>
+      <td class="nowrap">{{ d.updated_at | dt }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="7" class="muted">No documents match. You only see documents you own or that were shared with you by name.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

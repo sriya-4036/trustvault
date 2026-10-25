@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Audit log{% endblock %}
+{% block content %}
+<h1>Audit log</h1>
+{% include "admin/_nav.html" %}
+<form method="get" action="/admin/audit" class="card search">
+  <div class="grid">
+    <label>Action
+      <select name="action"><option value="">Any</option>
+        <optgroup label="Groups">{% for g in groups %}<option value="{{ g }}" {% if params.action == g %}selected{% endif %}>All {{ g }} events</option>{% endfor %}</optgroup>
+        <optgroup label="Actions">{% for a in actions %}<option value="{{ a }}" {% if params.action == a %}selected{% endif %}>{{ a }}</option>{% endfor %}</optgroup>
+      </select>
+    </label>
+    <label>Actor <input name="actor" value="{{ params.actor }}"></label>
+    <label>Target user <input name="target" value="{{ params.target }}"></label>
+    <label>Document (name or id) <input name="document" value="{{ params.document }}"></label>
+    <label>Outcome
+      <select name="outcome"><option value="">Any</option>
+        {% for o in ['success', 'denied', 'failure'] %}<option value="{{ o }}" {% if params.outcome == o %}selected{% endif %}>{{ o }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>From <input type="date" name="date_from" value="{{ params.date_from }}"></label>
+    <label>To <input type="date" name="date_to" value="{{ params.date_to }}"></label>
+  </div>
+  <div class="actions">
+    <button type="submit" class="primary">Filter</button> <a href="/admin/audit">Reset</a>
+    <a class="button" href="/admin/audit.csv?{% for k, v in params.items() %}{{ k }}={{ v | urlencode }}&{% endfor %}">Export CSV</a>
+  </div>
+</form>
+<p class="muted">{{ total }} matching events · page {{ page }} of {{ pages }} · times in UTC</p>
+{% with link_admin = True %}{% include "_events.html" %}{% endwith %}
+<div class="pager">
+  {% if page > 1 %}<a href="?{% for k, v in params.items() %}{{ k }}={{ v | urlencode }}&{% endfor %}page={{ page - 1 }}">&larr; Newer</a>{% endif %}
+  {% if page < pages %}<a href="?{% for k, v in params.items() %}{{ k }}={{ v | urlencode }}&{% endfor %}page={{ page + 1 }}">Older &rarr;</a>{% endif %}
+</div>
+{% endblock %}

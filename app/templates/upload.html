@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Upload{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Upload document</h1>
+  {% for e in errors %}<div class="flash flash-error">{{ e }}</div>{% endfor %}
+  <form method="post" action="/documents" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>File <input type="file" name="file" required accept=".pdf,.docx,.xlsx,.pptx,.txt,.csv,.png,.jpg,.jpeg"></label>
+    <p class="muted">PDF, DOCX, XLSX, PPTX, TXT, CSV, PNG or JPEG, up to 10 MB. Content is checked against the extension; macros and PDF scripts are rejected. Files are encrypted at rest.</p>
+    <label>Name <input name="name" value="{{ form.name or '' }}" maxlength="200" placeholder="Defaults to the file name"></label>
+    <label>Category
+      <select name="category_id" required><option value="">Choose…</option>
+        {% for cat in categories %}<option value="{{ cat.id }}" {% if form.category_id == cat.id|string %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Description <textarea name="description" maxlength="2000" rows="3">{{ form.description or '' }}</textarea></label>
+    <p class="muted">Nobody else can see this document until you share it with them by name.</p>
+    <button type="submit" class="primary">Upload</button>
+  </form>
+</section>
+{% endblock %}

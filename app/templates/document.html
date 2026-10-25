@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}{{ doc.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ doc.name }}</h1>
+    <p class="muted">{{ doc.category.name }} · owned by {{ doc.owner.full_name }} (@{{ doc.owner.username }}) · uploaded {{ doc.created_at | dt }} · modified {{ doc.updated_at | dt }}</p>
+  </div>
+  <div class="actions">
+    <a class="button primary" href="/documents/{{ doc.id }}/download">Download</a>
+    {% if 'edit' in perms %}<a class="button" href="/documents/{{ doc.id }}/edit">Edit</a>{% endif %}
+  </div>
+</div>
+<p class="access">Your access:
+  {% if 'manage' in perms %}<span class="badge perm-owner">owner</span> read, edit, share, delete
+  {% elif 'edit' in perms %}<span class="badge perm-edit">edit</span> read, change details, upload versions
+  {% else %}<span class="badge perm-read">read</span> view and download{% endif %}
+</p>
+{% if doc.description %}<section class="card"><p class="pre">{{ doc.description }}</p></section>{% endif %}
+
+<section class="card">
+  <h2>Versions</h2>
+  <table>
+    <thead><tr><th>Version</th><th>File</th><th>Size</th><th>SHA-256</th><th>Uploaded by</th><th>When</th><th></th></tr></thead>
+    <tbody>
+    {% for v in doc.versions | reverse %}
+      <tr>
+        <td>v{{ v.version_no }}</td><td>{{ v.original_filename }}</td><td>{{ v.size_bytes | size }}</td>
+        <td class="mono small" title="{{ v.sha256 }}">{{ v.sha256[:16] }}…</td>
+        <td>{{ v.uploaded_by.username }}</td><td class="nowrap">{{ v.uploaded_at | dt }}</td>
+        <td><a href="/documents/{{ doc.id }}/download?version={{ v.version_no }}">Download</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% if 'manage' in perms %}
+<section class="card">
+  <h2>Who has access</h2>
+  <table>
+    <thead><tr><th>User</th><th>Permission</th><th>Granted by</th><th>Granted</th><th>Expires</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>{{ doc.owner.full_name }} (@{{ doc.owner.username }})</td><td><span class="badge perm-owner">owner</span></td><td colspan="4"></td></tr>
+      {% for g in grants %}
+      <tr class="{% if not g.is_active(now) %}expired{% endif %}">
+        <td>{{ g.user.full_name }} (@{{ g.user.username }}){% if not g.user.is_active %} <span class="badge outcome-denied">disabled</span>{% endif %}</td>
+        <td><span class="badge perm-{{ g.permission }}">{{ g.permission }}</span></td>
+        <td>{{ g.granted_by.username }}</td>
+        <td class="nowrap">{{ g.granted_at | dt }}</td>
+        <td class="nowrap">{% if g.expires_at %}{{ g.expires_at | dt }}{% if not g.is_active(now) %} (expired){% endif %}{% else %}never{% endif %}</td>
+        <td>
+          <form method="post" action="/documents/{{ doc.id }}/grants/{{ g.id }}/revoke" class="inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="danger small">Revoke</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h3>Grant access to a named person</h3>
+  <form method="post" action="/documents/{{ doc.id }}/grants" class="row">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>Username <input name="username" list="candidates" required maxlength="64"></label>
+    <datalist id="candidates">{% for u in candidates %}<option value="{{ u.username }}">{{ u.full_name }}</option>{% endfor %}</datalist>
+    <label>Permission
+      <select name="permission"><option value="read">read</option><option value="edit">edit</option></select>
+    </label>
+    <label>Expires (optional) <input type="date" name="expires_on"></label>
+    <button type="submit" class="primary">Grant</button>
+  </form>
+  <p class="muted">Granting to someone who already has access replaces their permission and expiry. Access applies to this document only.</p>
+</section>
+
+<section class="card">
+  <h2>Access history</h2>
+  <p class="muted">Every view, download, change and permission change on this document (latest 100).</p>
+  {% with events = history %}{% include "_events.html" %}{% endwith %}
+</section>
+
+<section class="card danger-zone">
+  <h2>Delete document</h2>
+  <form method="post" action="/documents/{{ doc.id }}/delete">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label class="check"><input type="checkbox" name="confirm" value="yes" required> Permanently destroy all versions and remove everyone's access. The audit trail is kept.</label>
+    <button type="submit" class="danger">Delete</button>
+  </form>
+</section>
+{% endif %}
+{% endblock %}

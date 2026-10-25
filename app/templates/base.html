@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}TrustVault{% endblock %} · TrustVault</title>
+  {% if csrf_token %}<meta name="csrf-token" content="{{ csrf_token }}">{% endif %}
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">Trust<span>Vault</span></a>
+  {% if user %}
+  <nav>
+    <a href="/documents">Documents</a>
+    {% if user.role == 'owner' %}<a href="/documents/new">Upload</a>{% endif %}
+    {% if user.role == 'admin' %}
+      <a href="/admin">Admin</a>
+      <a href="/admin/audit">Audit log</a>
+      <a href="/admin/permissions">Permissions</a>
+      <a href="/admin/users">Users</a>
+    {% endif %}
+  </nav>
+  <div class="who">
+    <span>{{ user.full_name }}</span>
+    <span class="badge role-{{ user.role }}">{{ user.role }}</span>
+    <a href="/account/password">Password</a>
+    <form method="post" action="/logout" class="inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="linkish">Sign out</button>
+    </form>
+  </div>
+  {% endif %}
+</header>
+<main>
+  {% if msg %}<div class="flash flash-{{ msg[0] }}">{{ msg[1] }}</div>{% endif %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

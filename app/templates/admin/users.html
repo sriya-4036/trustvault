@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<h1>Users</h1>
+{% include "admin/_nav.html" %}
+<table>
+  <thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Status</th><th>Owns</th><th>Actions</th></tr></thead>
+  <tbody>
+  {% for u in users %}
+    <tr>
+      <td>@{{ u.username }}</td><td>{{ u.full_name }}</td>
+      <td>
+        {% if u.id != user.id %}
+        <form method="post" action="/admin/users/{{ u.id }}/role" class="inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <select name="role">{% for r in roles %}<option value="{{ r }}" {% if u.role == r %}selected{% endif %}>{{ r }}</option>{% endfor %}</select>
+          <button type="submit" class="small">Set</button>
+        </form>
+        {% else %}<span class="badge role-{{ u.role }}">{{ u.role }}</span>{% endif %}
+      </td>
+      <td>
+        {% if not u.is_active %}<span class="badge outcome-denied">disabled</span>
+        {% elif u.locked_until and u.locked_until > now %}<span class="badge outcome-failure">locked</span>
+        {% else %}active{% endif %}
+        {% if u.must_change_password %}<span class="muted">· must change password</span>{% endif %}
+      </td>
+      <td>{{ owned.get(u.id, 0) }}</td>
+      <td class="actions-cell">
+        {% if u.id != user.id %}
+          {% if u.is_active %}
+          <form method="post" action="/admin/users/{{ u.id }}/deactivate" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit" class="danger small">Deactivate</button></form>
+          {% else %}
+          <form method="post" action="/admin/users/{{ u.id }}/activate" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit" class="small">Reactivate</button></form>
+          {% endif %}
+          {% if u.locked_until and u.locked_until > now %}
+          <form method="post" action="/admin/users/{{ u.id }}/unlock" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit" class="small">Unlock</button></form>
+          {% endif %}
+          <form method="post" action="/admin/users/{{ u.id }}/reset-password" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="password" name="password" placeholder="Temporary password" required minlength="12" autocomplete="new-password"><button type="submit" class="small">Reset</button></form>
+        {% else %}<span class="muted">you</span>{% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p class="muted">Deactivating a user ends their sessions and revokes every grant they hold, immediately.</p>
+<section class="card narrow">
+  <h2>Create user</h2>
+  {% for e in errors %}<div class="flash flash-error">{{ e }}</div>{% endfor %}
+  <form method="post" action="/admin/users">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>Username <input name="username" value="{{ form.username or '' }}" required maxlength="32" pattern="[a-z0-9][a-z0-9._\-]{2,31}"></label>
+    <label>Full name <input name="full_name" value="{{ form.full_name or '' }}" required maxlength="128"></label>
+    <label>Role <select name="role" required>{% for r in roles %}<option value="{{ r }}" {% if form.role == r %}selected{% endif %}>{{ r }}</option>{% endfor %}</select></label>
+    <label>Temporary password <input type="password" name="password" required minlength="12" maxlength="128" autocomplete="new-password"></label>
+    <button type="submit" class="primary">Create</button>
+  </form>
+</section>
+{% endblock %}

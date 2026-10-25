@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Permission changes{% endblock %}
+{% block content %}
+<h1>Permissions</h1>
+{% include "admin/_nav.html" %}
+<section class="card">
+  <h2>Permission change history</h2>
+  <form method="get" action="/admin/permissions" class="search">
+    <div class="grid">
+      <label>Changed by <input name="actor" value="{{ params.actor }}"></label>
+      <label>User affected <input name="target" value="{{ params.target }}"></label>
+      <label>Document <input name="document" value="{{ params.document }}"></label>
+      <label>From <input type="date" name="date_from" value="{{ params.date_from }}"></label>
+      <label>To <input type="date" name="date_to" value="{{ params.date_to }}"></label>
+    </div>
+    <div class="actions"><button type="submit" class="primary">Filter</button> <a href="/admin/permissions">Reset</a></div>
+  </form>
+  {% with link_admin = True %}{% include "_events.html" %}{% endwith %}
+</section>
+<section class="card">
+  <h2>Current grants ({{ grants | length }})</h2>
+  <table>
+    <thead><tr><th>Document</th><th>User</th><th>Permission</th><th>Granted by</th><th>Granted</th><th>Expires</th></tr></thead>
+    <tbody>
+    {% for g in grants %}
+      <tr class="{% if not g.is_active(now) %}expired{% endif %}">
+        <td><a href="/admin/documents/{{ g.document.id }}">{{ g.document.name }}</a></td>
+        <td>{{ g.user.username }}</td>
+        <td><span class="badge perm-{{ g.permission }}">{{ g.permission }}</span></td>
+        <td>{{ g.granted_by.username }}</td>
+        <td class="nowrap">{{ g.granted_at | dt }}</td>
+        <td class="nowrap">{% if g.expires_at %}{{ g.expires_at | dt }}{% if not g.is_active(now) %} (expired){% endif %}{% else %}never{% endif %}</td>
+      </tr>
+    {% else %}<tr><td colspan="6" class="muted">No grants.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

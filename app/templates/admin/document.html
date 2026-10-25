@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ doc.name }} (admin){% endblock %}
+{% block content %}
+<h1>{{ doc.name }}</h1>
+{% include "admin/_nav.html" %}
+<p class="muted">{{ doc.category.name }} · owner @{{ doc.owner.username }}{% if not doc.owner.is_active %} (disabled){% endif %} · id <span class="mono">{{ doc.id }}</span> · uploaded {{ doc.created_at | dt }}{% if doc.deleted_at %} · <b>deleted {{ doc.deleted_at | dt }}</b>{% endif %}</p>
+<div class="two-col">
+<section class="card">
+  <h2>Who can access it now</h2>
+  <table>
+    <thead><tr><th>User</th><th>Permission</th><th>Expires</th></tr></thead>
+    <tbody>
+      <tr><td>@{{ doc.owner.username }}</td><td><span class="badge perm-owner">owner</span></td><td></td></tr>
+      {% for g in doc.grants %}
+      <tr class="{% if not g.is_active(now) %}expired{% endif %}"><td>@{{ g.user.username }}</td><td><span class="badge perm-{{ g.permission }}">{{ g.permission }}</span></td>
+        <td>{% if g.expires_at %}{{ g.expires_at | dt }}{% if not g.is_active(now) %} (expired){% endif %}{% else %}never{% endif %}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+<section class="card">
+  <h2>Versions</h2>
+  <table>
+    <thead><tr><th>v</th><th>File</th><th>Size</th><th>SHA-256</th><th>By</th></tr></thead>
+    <tbody>{% for v in doc.versions %}<tr><td>{{ v.version_no }}</td><td>{{ v.original_filename }}</td><td>{{ v.size_bytes | size }}</td><td class="mono small" title="{{ v.sha256 }}">{{ v.sha256[:16] }}…</td><td>{{ v.uploaded_by.username }}</td></tr>{% endfor %}</tbody>
+  </table>
+  {% if not doc.deleted_at %}
+  <h3>Transfer ownership</h3>
+  <form method="post" action="/admin/documents/{{ doc.id }}/transfer" class="row">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>New owner
+      <select name="username" required><option value="">Choose…</option>{% for u in owners %}<option value="{{ u.username }}">{{ u.username }} ({{ u.full_name }})</option>{% endfor %}</select>
+    </label>
+    <button type="submit">Transfer</button>
+  </form>
+  <p class="muted">Use when an owner leaves. Existing grants are kept.</p>
+  {% endif %}
+</section>
+</div>
+<section class="card">
+  <h2>Complete history</h2>
+  {% with events = history %}{% include "_events.html" %}{% endwith %}
+</section>
+{% endblock %}

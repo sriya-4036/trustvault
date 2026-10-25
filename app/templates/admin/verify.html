@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Verify audit chain{% endblock %}
+{% block content %}
+<h1>Audit chain verification</h1>
+{% include "admin/_nav.html" %}
+<section class="card">
+  {% if report.ok %}
+    <div class="flash flash-ok">Intact. All {{ report.count }} events link correctly and match their hashes.</div>
+  {% else %}
+    <div class="flash flash-error">TAMPERING DETECTED at event #{{ report.first_bad_id }}: {{ report.reason }}</div>
+  {% endif %}
+  <p>Chain head (hash of the last verified event):</p>
+  <p class="mono">{{ report.head_hash }}</p>
+  <p class="muted">Each event stores the SHA-256 of its own contents plus the previous event's hash. Editing, removing or reordering any event breaks every link after it. Record the head hash somewhere outside TrustVault (a ticket, an email to the auditor) to also detect events being cut off the end.</p>
+</section>
+{% endblock %}

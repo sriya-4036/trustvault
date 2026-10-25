@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ doc.name }}{% endblock %}
+{% block content %}
+<p><a href="/documents/{{ doc.id }}">&larr; {{ doc.name }}</a></p>
+{% for e in errors %}<div class="flash flash-error">{{ e }}</div>{% endfor %}
+<div class="two-col">
+<section class="card">
+  <h2>Details</h2>
+  <form method="post" action="/documents/{{ doc.id }}/edit">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>Name <input name="name" value="{{ form.name }}" required maxlength="200"></label>
+    <label>Category
+      <select name="category_id" required>
+        {% for cat in categories %}<option value="{{ cat.id }}" {% if form.category_id == cat.id|string %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Description <textarea name="description" maxlength="2000" rows="4">{{ form.description }}</textarea></label>
+    <button type="submit" class="primary">Save</button>
+  </form>
+</section>
+<section class="card">
+  <h2>Upload new version</h2>
+  <form method="post" action="/documents/{{ doc.id }}/versions" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>File <input type="file" name="file" required accept=".pdf,.docx,.xlsx,.pptx,.txt,.csv,.png,.jpg,.jpeg"></label>
+    <p class="muted">Current: v{{ doc.current_version.version_no }} · {{ doc.current_version.original_filename }}. Earlier versions are kept.</p>
+    <button type="submit">Upload version</button>
+  </form>
+</section>
+</div>
+{% endblock %}

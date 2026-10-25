@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+<h1>Categories</h1>
+{% include "admin/_nav.html" %}
+<table class="narrow"><thead><tr><th>Category</th><th>Documents</th></tr></thead>
+<tbody>{% for cat, n in rows %}<tr><td>{{ cat.name }}</td><td>{{ n }}</td></tr>{% endfor %}</tbody></table>
+<form method="post" action="/admin/categories" class="card narrow row">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <label>New category <input name="name" required maxlength="64"></label>
+  <button type="submit" class="primary">Add</button>
+</form>
+{% endblock %}
