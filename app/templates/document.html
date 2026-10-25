@@ -3,8 +3,8 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <h1>{{ doc.name }}</h1>
-    <p class="muted">{{ doc.category.name }} · owned by {{ doc.owner.full_name }} (@{{ doc.owner.username }}) · uploaded {{ doc.created_at | dt }} · modified {{ doc.updated_at | dt }}</p>
+    <h1><span class="ico">&#128196;</span> {{ doc.name }}</h1>
+    <p class="muted"><span class="badge cat cat-{{ doc.category_id % 7 }}">{{ doc.category.name }}</span> · owned by {{ doc.owner.full_name }} (@{{ doc.owner.username }}) · uploaded {{ doc.created_at | dt }} · modified {{ doc.updated_at | dt }}</p>
   </div>
   <div class="actions">
     <a class="button primary" href="/documents/{{ doc.id }}/download">Download</a>

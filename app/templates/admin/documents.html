@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}All documents{% endblock %}
 {% block content %}
-<h1>All documents</h1>
+<h1><span class="ico">&#128194;</span> All documents</h1>
 {% include "admin/_nav.html" %}
 <form method="get" action="/admin/documents" class="card search">
   <div class="grid">
@@ -31,7 +31,7 @@
   {% for d in docs %}
     <tr>
       <td><a href="/admin/documents/{{ d.id }}">{{ d.name }}</a></td>
-      <td>{{ d.category.name }}</td><td>{{ d.owner.username }}</td><td>{{ d.grants | length }}</td>
+      <td><span class="badge cat cat-{{ d.category_id % 7 }}">{{ d.category.name }}</span></td><td>{{ d.owner.username }}</td><td>{{ d.grants | length }}</td>
       <td>{{ d.versions | length }}</td><td class="nowrap">{{ d.created_at | dt }}</td><td class="nowrap">{{ d.updated_at | dt }}</td>
       <td>{% if d.deleted_at %}<span class="badge outcome-denied">deleted {{ d.deleted_at | dt }}</span>{% else %}active{% endif %}</td>
     </tr>

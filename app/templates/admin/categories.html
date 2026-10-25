@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Categories{% endblock %}
 {% block content %}
-<h1>Categories</h1>
+<h1><span class="ico">&#127991;&#65039;</span> Categories</h1>
 {% include "admin/_nav.html" %}
 <table class="narrow"><thead><tr><th>Category</th><th>Documents</th></tr></thead>
 <tbody>{% for cat, n in rows %}<tr><td>{{ cat.name }}</td><td>{{ n }}</td></tr>{% endfor %}</tbody></table>

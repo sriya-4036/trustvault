@@ -2,7 +2,7 @@
 {% block title %}Documents{% endblock %}
 {% block content %}
 <div class="page-head">
-  <h1>Documents</h1>
+  <h1><span class="ico">&#128194;</span> Documents</h1>
   {% if user.role == 'owner' %}<a class="button primary" href="/documents/new">Upload document</a>{% endif %}
 </div>
 <form method="get" action="/documents" class="card search">
@@ -30,7 +30,7 @@
       </select>
     </label>
   </div>
-  <div class="actions"><button type="submit" class="primary">Search</button> <a href="/documents">Reset</a></div>
+  <div class="actions"><button type="submit" class="primary">&#128269; Search</button> <a href="/documents">Reset</a></div>
   {% for e in f.errors %}<div class="flash flash-error">{{ e }}</div>{% endfor %}
 </form>
 
@@ -40,8 +40,8 @@
   {% for d in docs %}
     {% set g = grants.get(d.id) %}
     <tr>
-      <td><a href="/documents/{{ d.id }}">{{ d.name }}</a></td>
-      <td>{{ d.category.name }}</td>
+      <td>&#128196; <a href="/documents/{{ d.id }}">{{ d.name }}</a></td>
+      <td><span class="badge cat cat-{{ d.category_id % 7 }}">{{ d.category.name }}</span></td>
       <td>{{ d.owner.full_name }} <span class="muted">@{{ d.owner.username }}</span></td>
       <td>{% if d.owner_id == user.id %}<span class="badge perm-owner">owner</span>{% elif g %}<span class="badge perm-{{ g.permission }}">{{ g.permission }}</span>{% if g.expires_at %} <span class="muted">until {{ g.expires_at | dt }}</span>{% endif %}{% endif %}</td>
       <td>v{{ d.current_version.version_no if d.current_version else '-' }}</td>

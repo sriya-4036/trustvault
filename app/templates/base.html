@@ -9,22 +9,22 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="/">Trust<span>Vault</span></a>
+  <a class="brand" href="/">&#128272; Trust<span>Vault</span></a>
   {% if user %}
   <nav>
-    <a href="/documents">Documents</a>
-    {% if user.role == 'owner' %}<a href="/documents/new">Upload</a>{% endif %}
+    <a href="/documents">&#128194; Documents</a>
+    {% if user.role == 'owner' %}<a href="/documents/new">&#128228; Upload</a>{% endif %}
     {% if user.role == 'admin' %}
-      <a href="/admin">Admin</a>
-      <a href="/admin/audit">Audit log</a>
-      <a href="/admin/permissions">Permissions</a>
-      <a href="/admin/users">Users</a>
+      <a href="/admin">&#128737;&#65039; Admin</a>
+      <a href="/admin/audit">&#128220; Audit log</a>
+      <a href="/admin/permissions">&#128273; Permissions</a>
+      <a href="/admin/users">&#128101; Users</a>
     {% endif %}
   </nav>
   <div class="who">
-    <span>{{ user.full_name }}</span>
+    <span class="name">&#128075; {{ user.full_name }}</span>
     <span class="badge role-{{ user.role }}">{{ user.role }}</span>
-    <a href="/account/password">Password</a>
+    <a href="/account/password">&#128274; Password</a>
     <form method="post" action="/logout" class="inline">
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
       <button type="submit" class="linkish">Sign out</button>
@@ -36,5 +36,6 @@
   {% if msg %}<div class="flash flash-{{ msg[0] }}">{{ msg[1] }}</div>{% endif %}
   {% block content %}{% endblock %}
 </main>
+<footer class="foot">Made with &#128156; &#183; TrustVault &#183; every view &amp; download is logged &#128064;</footer>
 </body>
 </html>

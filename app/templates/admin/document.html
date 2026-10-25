@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ doc.name }} (admin){% endblock %}
 {% block content %}
-<h1>{{ doc.name }}</h1>
+<h1><span class="ico">&#128196;</span> {{ doc.name }}</h1>
 {% include "admin/_nav.html" %}
-<p class="muted">{{ doc.category.name }} · owner @{{ doc.owner.username }}{% if not doc.owner.is_active %} (disabled){% endif %} · id <span class="mono">{{ doc.id }}</span> · uploaded {{ doc.created_at | dt }}{% if doc.deleted_at %} · <b>deleted {{ doc.deleted_at | dt }}</b>{% endif %}</p>
+<p class="muted"><span class="badge cat cat-{{ doc.category_id % 7 }}">{{ doc.category.name }}</span> · owner @{{ doc.owner.username }}{% if not doc.owner.is_active %} (disabled){% endif %} · id <span class="mono">{{ doc.id }}</span> · uploaded {{ doc.created_at | dt }}{% if doc.deleted_at %} · <b>deleted {{ doc.deleted_at | dt }}</b>{% endif %}</p>
 <div class="two-col">
 <section class="card">
   <h2>Who can access it now</h2>

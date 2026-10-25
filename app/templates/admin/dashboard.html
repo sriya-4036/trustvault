@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Admin{% endblock %}
 {% block content %}
-<h1>Administration</h1>
+<h1><span class="ico">&#128737;&#65039;</span> Administration</h1>
 {% include "admin/_nav.html" %}
 <div class="stats">
   <div class="stat"><b>{{ stats.users.get('admin', 0) }} / {{ stats.users.get('owner', 0) }} / {{ stats.users.get('viewer', 0) }}</b><span>active admins / owners / viewers</span></div>
@@ -12,7 +12,7 @@
   <div class="stat {% if stats.denied_24h %}alert{% endif %}"><b>{{ stats.denied_24h }}</b><span>denied attempts (24h)</span></div>
 </div>
 <p class="muted">Administrators see metadata and the audit trail for every document but cannot open document contents unless an owner shares the document with them.</p>
-<section class="card"><h2>Recent document activity</h2>{% with events = recent_activity, link_admin = True %}{% include "_events.html" %}{% endwith %}<p><a href="/admin/audit?action=documents">All document activity &rarr;</a></p></section>
-<section class="card"><h2>Recent permission changes</h2>{% with events = recent_permissions, link_admin = True %}{% include "_events.html" %}{% endwith %}<p><a href="/admin/permissions">All permission changes &rarr;</a></p></section>
-<section class="card"><h2>Recent denied and failed attempts</h2>{% with events = recent_denied, link_admin = True %}{% include "_events.html" %}{% endwith %}<p><a href="/admin/audit?outcome=denied">All denied attempts &rarr;</a></p></section>
+<section class="card"><h2>&#128200; Recent document activity</h2>{% with events = recent_activity, link_admin = True %}{% include "_events.html" %}{% endwith %}<p><a href="/admin/audit?action=documents">All document activity &rarr;</a></p></section>
+<section class="card"><h2>&#128273; Recent permission changes</h2>{% with events = recent_permissions, link_admin = True %}{% include "_events.html" %}{% endwith %}<p><a href="/admin/permissions">All permission changes &rarr;</a></p></section>
+<section class="card"><h2>&#128683; Recent denied and failed attempts</h2>{% with events = recent_denied, link_admin = True %}{% include "_events.html" %}{% endwith %}<p><a href="/admin/audit?outcome=denied">All denied attempts &rarr;</a></p></section>
 {% endblock %}
