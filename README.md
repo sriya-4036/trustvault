@@ -6,6 +6,8 @@ Stack: Python 3.10+, FastAPI, SQLAlchemy 2, SQLite, server-rendered Jinja2 (no J
 
 ## Run it
 
+Step-by-step setup for Windows, macOS and Linux, plus troubleshooting: see **[RUNBOOK.md](RUNBOOK.md)**.
+
 ```bash
 sudo apt-get install -y libmagic1            # used to sniff uploaded content
 pip install -r requirements-dev.txt
