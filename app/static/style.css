@@ -138,3 +138,46 @@ tr.row-denied td{background:#fff1f2!important}tr.row-failure td{background:#fffb
 .features{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px auto 0;max-width:640px}
 .features span{background:#fff;border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px;box-shadow:0 3px 0 var(--line)}
 footer.foot{text-align:center;color:var(--muted);font-size:13px;font-weight:700;padding:0 0 30px}
+
+/* phones & small tablets */
+@media (max-width:700px){
+  body{font-size:14px}
+  .topbar{padding:10px 12px;gap:8px 10px}
+  .brand{font-size:18px;padding:5px 12px!important}
+  .who{margin-left:auto;gap:6px}
+  .who .name{display:none}
+  .who a{padding:5px 8px}
+  .topbar nav{order:3;flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding-bottom:2px;scrollbar-width:none}
+  .topbar nav::-webkit-scrollbar{display:none}
+  .topbar nav a{white-space:nowrap;background:rgba(255,255,255,.18);padding:6px 12px}
+  main{padding:18px 12px 40px}
+  h1{font-size:24px}
+  .hero h1{font-size:34px}.hero .logo{font-size:52px}
+  .card{padding:16px;border-radius:16px}
+  .page-head{align-items:center}
+  .access{margin-top:12px}
+  .search .grid{grid-template-columns:1fr 1fr;gap:0 10px}
+  .row label{flex:1 1 100%}
+  .row button{width:100%}
+  .subnav{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;margin-bottom:16px}
+  .subnav a{white-space:nowrap}
+  .stats{grid-template-columns:1fr 1fr;gap:10px}
+  .stat{padding:14px}.stat b{font-size:24px}
+  .narrow{max-width:none}
+  /* wide tables scroll sideways instead of squashing the page */
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  th,td{white-space:nowrap}
+  .events .details{white-space:normal;min-width:200px}
+  /* document list turns into cards */
+  table.docs{display:block;overflow:visible;background:none;border:none;box-shadow:none}
+  table.docs thead{display:none}
+  table.docs tbody{display:grid;gap:12px}
+  table.docs tr{display:block;background:#fff;border:2px solid var(--line);border-left:6px solid var(--pink);border-radius:16px;padding:10px 14px;box-shadow:var(--shadow)}
+  table.docs tbody tr:nth-child(3n+2){border-left-color:var(--purple)}
+  table.docs tbody tr:nth-child(3n+3){border-left-color:var(--teal)}
+  table.docs td{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border:none;background:none!important;white-space:normal;text-align:right}
+  table.docs td::before{content:attr(data-label);font-weight:800;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;text-align:left}
+  table.docs td[data-label="Name"]{font-size:16px;text-align:left;padding-bottom:8px;border-bottom:1px dashed var(--line)!important;margin-bottom:4px}
+  table.docs td[data-label="Name"]::before{display:none}
+  table.docs tr.empty td{display:block;text-align:left}
+}

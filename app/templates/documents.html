@@ -40,16 +40,16 @@
   {% for d in docs %}
     {% set g = grants.get(d.id) %}
     <tr>
-      <td>&#128196; <a href="/documents/{{ d.id }}">{{ d.name }}</a></td>
-      <td><span class="badge cat cat-{{ d.category_id % 7 }}">{{ d.category.name }}</span></td>
-      <td>{{ d.owner.full_name }} <span class="muted">@{{ d.owner.username }}</span></td>
-      <td>{% if d.owner_id == user.id %}<span class="badge perm-owner">owner</span>{% elif g %}<span class="badge perm-{{ g.permission }}">{{ g.permission }}</span>{% if g.expires_at %} <span class="muted">until {{ g.expires_at | dt }}</span>{% endif %}{% endif %}</td>
-      <td>v{{ d.current_version.version_no if d.current_version else '-' }}</td>
-      <td class="nowrap">{{ d.created_at | dt }}</td>
-      <td class="nowrap">{{ d.updated_at | dt }}</td>
+      <td data-label="Name">&#128196; <a href="/documents/{{ d.id }}">{{ d.name }}</a></td>
+      <td data-label="Category"><span class="badge cat cat-{{ d.category_id % 7 }}">{{ d.category.name }}</span></td>
+      <td data-label="Owner"><span>{{ d.owner.full_name }} <span class="muted">@{{ d.owner.username }}</span></span></td>
+      <td data-label="Your access"><span>{% if d.owner_id == user.id %}<span class="badge perm-owner">owner</span>{% elif g %}<span class="badge perm-{{ g.permission }}">{{ g.permission }}</span>{% if g.expires_at %} <span class="muted">until {{ g.expires_at | dt }}</span>{% endif %}{% endif %}</span></td>
+      <td data-label="Version">v{{ d.current_version.version_no if d.current_version else '-' }}</td>
+      <td class="nowrap" data-label="Uploaded">{{ d.created_at | dt }}</td>
+      <td class="nowrap" data-label="Modified">{{ d.updated_at | dt }}</td>
     </tr>
   {% else %}
-    <tr><td colspan="7" class="muted">No documents match. You only see documents you own or that were shared with you by name.</td></tr>
+    <tr class="empty"><td colspan="7" class="muted">No documents match. You only see documents you own or that were shared with you by name.</td></tr>
   {% endfor %}
   </tbody>
 </table>
